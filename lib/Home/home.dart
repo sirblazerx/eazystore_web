@@ -40,7 +40,7 @@ class HomePage extends StatelessWidget {
     //   });
     // });
 
-    print(store.StoreId);
+    // print(store.StoreId);
 
     return SafeArea(
       child: Scaffold(
@@ -147,7 +147,7 @@ class HomePage extends StatelessWidget {
               StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection('Menu')
-                      // .where('StoreId', ))
+                      .where('StoreId', isEqualTo: user.uid)
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.data == null) {
@@ -192,7 +192,9 @@ class HomePage extends StatelessWidget {
                                                   minWidth: 100,
                                                   maxWidth: 150,
                                                   maxHeight: 160),
-                                              child: Icon(Icons.fastfood)),
+                                              child: Image.network(
+                                                      stores['Img']) ??
+                                                  Icon(Icons.fastfood)),
                                         ),
                                         title: stores['Name'],
                                       ),

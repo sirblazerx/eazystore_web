@@ -3,7 +3,7 @@ import 'package:eazystore/Custom/customlist.dart';
 import 'package:eazystore/Models/User.dart';
 import 'package:eazystore/Store/event/EditStore.dart';
 import 'package:eazystore/Store/event/VStoryEdit.dart';
-import 'package:eazystore/Store/event/cerateStore.dart';
+import 'package:eazystore/Store/event/CreateStore.dart';
 import 'package:eazystore/Services/Menu_Service.dart';
 import 'package:eazystore/Menu/createMenu.dart';
 import 'package:flutter/cupertino.dart';
@@ -145,7 +145,9 @@ class ManageStore extends StatelessWidget {
                                                   minWidth: 100,
                                                   maxWidth: 150,
                                                   maxHeight: 160),
-                                              child: Icon(Icons.fastfood)),
+                                              child: Image.network(
+                                                      stores['Img']) ??
+                                                  (Icons.fastfood)),
                                         ),
                                         title: stores['Name'],
                                       ),
