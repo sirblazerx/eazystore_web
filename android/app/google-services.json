@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "96817690408",
+    "project_id": "eazystore-8fad3",
+    "storage_bucket": "eazystore-8fad3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:96817690408:android:e51afc00ed59ae8629c21d",
+        "android_client_info": {
+          "package_name": "com.eazystore.eazystore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "96817690408-gj8nbahhs7btj1la6qgrpe9ltaenrflo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9inE8nfzZcs5zREdK4uGOSoc6NsPKxYE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "96817690408-gj8nbahhs7btj1la6qgrpe9ltaenrflo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
