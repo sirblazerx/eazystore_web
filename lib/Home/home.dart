@@ -5,6 +5,7 @@ import 'package:eazystore/Custom/loading.dart';
 import 'package:eazystore/Models/Store.dart';
 import 'package:eazystore/Models/User.dart';
 import 'package:eazystore/QR%20Scanner/Qr.dart';
+import 'package:eazystore/Services/StoreService.dart';
 import 'package:eazystore/Services/UserDB.dart';
 import 'package:eazystore/Services/authservice.dart';
 import 'package:eazystore/Store/event/StorePageList.dart';
@@ -146,7 +147,7 @@ class HomePage extends StatelessWidget {
               StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection('Menu')
-                      .where('StoreId', isEqualTo: user.uid)
+                      // .where('StoreId', ))
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.data == null) {
