@@ -86,21 +86,21 @@ class _SignInState extends State<SignIn> {
                                     ),
                                     SizedBox(height: 20.0),
 
-                                    //Anon Sign IN
+                                    // Anon Sign IN
 
-                                    // ElevatedButton(
-                                    //     style: ButtonStyle(
-                                    //         backgroundColor:
-                                    //             MaterialStateProperty.all<
-                                    //                 Color>(Colors.red)),
-                                    //     onPressed: () async {
-                                    //       dynamic anresult =
-                                    //           await _auth.signAnon();
-                                    //       if (anresult == null) {
-                                    //         print('Login Failures');
-                                    //       } else {}
-                                    //     },
-                                    //     child: Text('Guest Sign In')),
+                                    ElevatedButton(
+                                        style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                    Color>(Colors.red)),
+                                        onPressed: () async {
+                                          dynamic anresult =
+                                              await _auth.signAnon();
+                                          if (anresult == null) {
+                                            print('Login Failures');
+                                          } else {}
+                                        },
+                                        child: Text('Guest Sign In')),
 
                                     RaisedButton(
                                         color: Colors.amberAccent[400],
