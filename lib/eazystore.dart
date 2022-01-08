@@ -12,6 +12,7 @@ class Eazystore extends StatelessWidget {
   Widget build(BuildContext context) {
     // ignore: missing_required_param
     return StreamProvider<Store>.value(
+      initialData: null,
       child: StreamProvider<UserM>.value(
         value: AuthService().user,
         child: GetMaterialApp(

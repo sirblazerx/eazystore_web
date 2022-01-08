@@ -5,7 +5,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 class ForgotPassword extends StatelessWidget {
   final _auth = FirebaseAuth.instance;
 
-  String email;
+  String email = '';
 
   Future<void> resetPassword(String email) async {
     await _auth.sendPasswordResetEmail(email: email);

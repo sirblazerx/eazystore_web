@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 class VStoryEdit extends StatefulWidget {
   final String storyid;
 
-  VStoryEdit({Key key, @required this.storyid}) : super(key: key);
+  const VStoryEdit({Key key, this.storyid}) : super(key: key);
 
   @override
   _VStoryEditState createState() => _VStoryEditState();
@@ -17,28 +17,21 @@ class VStoryEdit extends StatefulWidget {
 class _VStoryEditState extends State<VStoryEdit> {
   @override
   Widget build(BuildContext context) {
-
     final user = Provider.of<UserM>(context);
 
     return SafeArea(
-
       child: Scaffold(
-
         appBar: AppBar(
-
           title: Text('Story'),
-
           backgroundColor: Colors.pinkAccent,
           elevation: 0.0,
         ),
-
         body: StreamBuilder(
             stream: FirebaseFirestore.instance
                 .collection('Store')
                 .doc(widget.storyid)
                 .snapshots(),
             builder: (BuildContext context, snapshot) {
-              
               if (snapshot.hasError) {
                 return Text('Something went wrong');
               }
@@ -48,10 +41,7 @@ class _VStoryEditState extends State<VStoryEdit> {
               Widget mediaGetter() {
                 if (_data['Img'] != '') {
                   return Image.network(_data['Img']);
-                }
-              
-
-                else {
+                } else {
                   return Container();
                 }
               }

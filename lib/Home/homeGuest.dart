@@ -19,7 +19,7 @@ import 'package:flutter_cart/flutter_cart.dart';
 
 var cart = FlutterCart();
 
-class HomePage extends StatelessWidget {
+class HomePageGuest extends StatelessWidget {
   @override
   final AuthService _auth = AuthService();
 
@@ -49,7 +49,7 @@ class HomePage extends StatelessWidget {
         resizeToAvoidBottomInset: true,
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text('Eazystore User'),
+          title: Text('Eazystore Guest'),
           centerTitle: true,
           actions: <Widget>[
             IconButton(
@@ -64,73 +64,24 @@ class HomePage extends StatelessWidget {
           ],
         ),
         drawer: Drawer(
-            child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('Users')
-                    .doc(user.uid)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    DocumentSnapshot _data = snapshot.data;
-
-                    return ListView(
-                      padding: EdgeInsets.zero,
-                      children: [
-                        DrawerHeader(
-                          // decoration: BoxDecoration(color: Colors.white),
-                          child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Text('Hello , ' + _data['name'])),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                            title: Text('Manage Store'),
-                            leading: Icon(Icons.store),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ManageStore()));
-                            },
-                          ),
-                        ),
-                        Divider(),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                            title: Text('QR'),
-                            leading: Icon(Icons.store),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => Qr()));
-                            },
-                          ),
-                        ),
-                        Divider(),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                            title: Text('Profile'),
-                            leading: Icon(Icons.store),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => Profile()));
-                            },
-                          ),
-                        ),
-                        Divider(),
-                        ListTile(
-                          title: Text('Logout'),
-                          leading: Icon(Icons.logout, color: Colors.red),
-                          onTap: () async {
-                            await _auth.signOut();
-                          },
-                        ),
-                        Divider(),
-                      ],
-                    );
-                  }
-                  return Loading();
-                })),
+            child: ListView(
+          children: [
+            DrawerHeader(
+              // decoration: BoxDecoration(color: Colors.white),
+              child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Text('Hello  Guest ')),
+            ),
+            Divider(),
+            ListTile(
+              title: Text('Logout'),
+              leading: Icon(Icons.logout, color: Colors.red),
+              onTap: () async {
+                await _auth.signOut();
+              },
+            ),
+          ],
+        )),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
