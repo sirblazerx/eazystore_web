@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eazystore/Auth/sign_in.dart';
@@ -16,6 +17,8 @@ import 'package:eazystore/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_cart/flutter_cart.dart';
+import 'package:ticketview/ticketview.dart';
+
 
 var cart = FlutterCart();
 List<DocumentSnapshot> FoodList;
@@ -319,7 +322,8 @@ class _CartState extends State<Cart> {
                         backgroundColor:
                             MaterialStateProperty.all(Colors.greenAccent[700])),
                     onPressed: () {
-                      _confirmCart(context);
+                      ConfirmOrderDialog(context);
+                      //_confirmCart(context);
                     },
                     icon: Icon(Icons.payment),
                     label: Text('Confirm Order')),
@@ -334,7 +338,7 @@ class _CartState extends State<Cart> {
     );
   }
 }
-
+//carts navigation
 void _confirmCart(BuildContext context) {
   Navigator.of(context).push(MaterialPageRoute(builder: (context) => CartC()));
 }
@@ -436,6 +440,7 @@ class _CartCState extends State<CartC> {
   }
 }
 
+//display menu by list
 class MenuTile extends StatelessWidget{
 
   MenuTile({Key key, this.item}) : super(key: key);
@@ -520,3 +525,185 @@ class MenuTile extends StatelessWidget{
   }
 }
 
+//confirm order dialog
+Future<void> ConfirmOrderDialog(BuildContext context) async {
+  TextEditingController _textFieldController = TextEditingController();
+  String tableNumber;
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Row(
+              children: <Widget>[
+                Icon(Icons.payment),
+                Text(" Confirm order"),
+              ]
+          ),
+          content: TextField(
+            onChanged: (val) {
+                tableNumber = val;
+            },
+            controller: _textFieldController,
+            decoration: InputDecoration(hintText: "Please enter your table no."),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel', style: TextStyle(color: Colors.green))
+            ),
+            TextButton(
+              onPressed: () {
+                Random random = new Random();
+                if(tableNumber == null)
+                  tableNumber = random.nextInt(20).toString();
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => Receipt(tableNumber: tableNumber,)));
+
+              },
+              child: const Text('Confirm', style: TextStyle(color: Colors.green))
+            ),
+          ],
+        );
+      });
+}
+
+class Receipt extends StatelessWidget{
+  final String tableNumber;
+
+  Receipt({Key key, this.tableNumber}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Random random = new Random();
+    return Scaffold(
+      appBar: AppBar(title: Text('Order Confirmation')),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: TicketView(
+              backgroundPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+              backgroundColor: Colors.grey,
+              contentPadding: EdgeInsets.symmetric(vertical: 24, horizontal: 15),
+              drawArc: false,
+              triangleAxis: Axis.vertical,
+              borderRadius: 6,
+              drawDivider: true,
+              dividerColor: Colors.white,
+              dividerStrokeWidth: 0,
+              trianglePos: .5,
+              drawShadow: true,
+              drawBorder: true,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                        child: Container(
+                          padding: EdgeInsets.all(24),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Text(
+                                    'Order #'+random.nextInt(100000).toString(),
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  Expanded(child: Container()),
+                                  RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: getCurrentDate(),
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 14),
+                              Text(
+                                'Table No: '+ tableNumber.toString(),
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              SizedBox(height: 10),
+
+                              ListView.builder(
+                                  shrinkWrap: true, // <- added
+                                  primary: false,
+                                  itemExtent: 25,
+                                  itemCount: cart.getCartItemCount(),
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return ListTile(
+                                      trailing: Text(cart.cartItem[index].quantity.toString() +
+                                          " - RM " +
+                                          (cart.cartItem[index].unitPrice *
+                                              cart.cartItem[index].quantity)
+                                              .toStringAsFixed(2)),
+                                      title: Text(cart.cartItem[index].productName),
+                                    );
+                                    //return new Text(cart.cartItem[index].unitPrice.toString());
+                                  }),
+                              SizedBox(height: 35),
+                            ],
+                          ),
+                        ),
+                      ),
+
+
+                  ),
+                  Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text("Total :",
+                            style: TextStyle(
+                                color: Colors.grey[800],
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20)),
+                        Text("RM " + cart.getTotalAmount().toStringAsFixed(2),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 30)),
+                        SizedBox(height: 15),
+
+                        Text("Thank you for your purchase, please show the receipt at counter to proceed with your payment.",
+                          textAlign: TextAlign.center,),
+                        SizedBox(height: 20),
+
+
+                      ],
+                    )
+                    ,
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+        ],
+      ),
+    );
+  }
+}
+
+getCurrentDate() {
+  var date = DateTime.now().toString();
+
+  var dateParse = DateTime.parse(date);
+
+  var formattedDate = "${dateParse.day}-${dateParse.month}-${dateParse.year}";
+
+  return formattedDate;
+}

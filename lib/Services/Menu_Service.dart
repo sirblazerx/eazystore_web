@@ -15,9 +15,8 @@ class MenuService {
 
   // User Data
 
-  Future updateMenuData(String Name, double Price, String Desc,
-      String Img, String Category, String StoreId) async {
-    print(Price);
+  Future updateMenuData({String Name, double Price, String Desc,
+      String Img, String Category, String StoreId}) async {
     return await menu.doc(mid).set({
       'Name': Name,
       'Price': Price,

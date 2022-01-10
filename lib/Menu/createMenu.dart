@@ -50,7 +50,7 @@ class _AddMenuState extends State<AddMenu> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text('Create Store'),
+            title: Text('Add Menu'),
             centerTitle: true,
             backgroundColor: Colors.pinkAccent,
           ),
@@ -122,6 +122,8 @@ class _AddMenuState extends State<AddMenu> {
                               horizontal: 16.0, vertical: 8.0),
                           child: TextFormField(
                             initialValue: null,
+                            minLines: 3,
+                            maxLines: 3,
                             validator: (val) =>
                                 val.isEmpty ? 'Enter Menu Description' : null,
                             onChanged: (val) => setState(() => _desc = val),
@@ -140,8 +142,6 @@ class _AddMenuState extends State<AddMenu> {
                               horizontal: 16.0, vertical: 8.0),
                           child: TextFormField(
                             initialValue: null,
-                            minLines: 3,
-                            maxLines: 5,
                             validator: (val) =>
                                 val.isEmpty ? 'Enter Menu Price' : null,
                             onChanged: (val) =>

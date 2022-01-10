@@ -17,12 +17,12 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class AddStory extends StatefulWidget {
+class AddStore extends StatefulWidget {
   @override
-  _AddStoryState createState() => _AddStoryState();
+  _AddStoreState createState() => _AddStoreState();
 }
 
-class _AddStoryState extends State<AddStory> {
+class _AddStoreState extends State<AddStore> {
   CollectionReference story = FirebaseFirestore.instance.collection('storys');
 
   InAppWebViewController webView;
@@ -56,7 +56,7 @@ class _AddStoryState extends State<AddStory> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text('Create Store'),
+            title: Text('Add Store'),
             centerTitle: true,
             backgroundColor: Colors.pinkAccent,
           ),
@@ -69,7 +69,7 @@ class _AddStoryState extends State<AddStory> {
                     child: Column(
                       children: [
                         SizedBox(height: 20.0),
-                        (_curimg != '')
+                        (_curimg != null)
                             ? Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Container(

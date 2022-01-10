@@ -6,17 +6,20 @@ import 'package:eazystore/Store/event/VStoryEdit.dart';
 import 'package:eazystore/Store/event/CreateStore.dart';
 import 'package:eazystore/Services/Menu_Service.dart';
 import 'package:eazystore/Menu/createMenu.dart';
+import 'package:eazystore/Menu/EditMenu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
 import 'package:eazystore/Custom/loading.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class ManageStore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserM>(context);
+    ValueNotifier<bool> isDialOpen = ValueNotifier(false);
 
     return Scaffold(
       appBar: AppBar(
@@ -168,11 +171,51 @@ class ManageStore extends StatelessWidget {
                                                         TextStyle(fontSize: 14),
                                                   ),
                                                   onPressed: () {
-                                                    MenuService(mid: stores.id)
-                                                        .deleteMenu();
+                                                    showDialog(context: context, builder: (BuildContext context) {
+                                                      return new AlertDialog(
+                                                        title: Text('Delete menu?'),
+                                                        content: Text('This action cannot be undone. Please think carefully.'),
+                                                        actions: [
+                                                          FlatButton(
+                                                            textColor: Colors.red,
+                                                            onPressed: () {Navigator.pop(context);},
+                                                            child: Text('CANCEL'),
+                                                          ),
+                                                          FlatButton(
+                                                            textColor: Colors.red,
+                                                            onPressed: () {
+                                                              MenuService(mid: stores.id)
+                                                                  .deleteMenu();
+                                                              Navigator.pop(context);
+                                                            },
+                                                            child: Text('ACCEPT'),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    });
+
                                                     // Do something
                                                   },
                                                   color: Colors.red,
+                                                  textColor: Colors.white,
+                                                  padding: EdgeInsets.all(1.0),
+                                                  splashColor: Colors.grey,
+                                                ),
+                                                VerticalDivider(),
+                                                RaisedButton(
+                                                  child: Text(
+                                                    "Edit",
+                                                    style:
+                                                    TextStyle(fontSize: 14),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.of(context).push(MaterialPageRoute(
+                                                        builder: (context) => EditMenu(
+                                                            menuid: stores.id,
+                                                            img: stores['Img'],)));
+                                                    // Do something
+                                                  },
+                                                  color: Colors.blue,
                                                   textColor: Colors.white,
                                                   padding: EdgeInsets.all(1.0),
                                                   splashColor: Colors.grey,
@@ -190,15 +233,51 @@ class ManageStore extends StatelessWidget {
                   }),
             ],
           )),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
+        openCloseDial: isDialOpen,
+        backgroundColor: Colors.redAccent,
+        overlayColor: Colors.black,
+        overlayOpacity: 0.3,
+        spacing: 15,
+        spaceBetweenChildren: 15,
+        closeManually: true,
+        children: [
+          SpeedDialChild(
+              child: Icon(Icons.local_dining),
+              label: 'Add Menu',
+              onTap: (){
+                isDialOpen.value = false;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AddMenu()),
+                );
+              }
+          ),
+          SpeedDialChild(
+              child: Icon(Icons.store),
+              label: 'Add Store',
+              onTap: (){
+                isDialOpen.value = false;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AddStore()),
+                );
+
+              }
+          ),
+
+        ],
+      ),/*FloatingActionButton(
         onPressed: () {
+
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => AddMenu()),
           );
         },
         child: Icon(Icons.add),
-      ),
+      ),*/
     );
   }
 }
