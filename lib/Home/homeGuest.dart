@@ -64,24 +64,25 @@ class HomePageGuest extends StatelessWidget {
           ],
         ),
         drawer: Drawer(
-            child: ListView(
-          children: [
-            DrawerHeader(
-              // decoration: BoxDecoration(color: Colors.white),
-              child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Text('Hello  Guest ')),
-            ),
-            Divider(),
-            ListTile(
-              title: Text('Logout'),
-              leading: Icon(Icons.logout, color: Colors.red),
-              onTap: () async {
-                await _auth.signOut();
-              },
-            ),
-          ],
-        )),
+          child: ListView(
+            children: [
+              DrawerHeader(
+                // decoration: BoxDecoration(color: Colors.white),
+                child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Text('Hello  Guest ')),
+              ),
+              Divider(),
+              ListTile(
+                title: Text('Logout'),
+                leading: Icon(Icons.logout, color: Colors.red),
+                onTap: () async {
+                  await _auth.signOut();
+                },
+              ),
+            ],
+          ),
+        ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -89,7 +90,7 @@ class HomePageGuest extends StatelessWidget {
               Center(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text('Our Menus',
+                  child: Text('Stores',
                       textAlign: TextAlign.center,
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
@@ -98,14 +99,12 @@ class HomePageGuest extends StatelessWidget {
               Divider(),
               StreamBuilder(
                   stream: FirebaseFirestore.instance
-                      .collection('Menu')
-                      .where('StoreId', isEqualTo: user.uid)
+                      .collection('Store')
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.data == null) {
                       return Loading();
                     }
-
                     return Expanded(
                       child: Card(
                         margin: const EdgeInsets.symmetric(vertical: 20.0),
@@ -121,80 +120,44 @@ class HomePageGuest extends StatelessWidget {
                               margin:
                                   const EdgeInsets.symmetric(vertical: 20.0),
                               child: InkWell(
-                                  onTap: () {
-                                    // Navigator.of(context).push(MaterialPageRoute(
-                                    //     builder: (context) =>
-                                    //         VDonation(donationid: donate.id)));
-                                  },
-                                  child: Column(
-                                    children: [
-                                      CustomListTile(
-                                        onTap: () {
-                                          // Navigator.of(context).push(MaterialPageRoute(builder: (context) => VDonation(donationid: donate.id)));
-                                        },
-                                        user:
-                                            "RM " + stores['Price'].toString(),
-                                        description: stores['Desc'],
-                                        thumbnail: Container(
-                                          decoration: const BoxDecoration(
-                                              color: Colors.transparent),
-                                          child: Container(
-                                              constraints: BoxConstraints(
-                                                  minHeight: 100,
-                                                  minWidth: 100,
-                                                  maxWidth: 150,
-                                                  maxHeight: 160),
-                                              child: Image.network(
-                                                      stores['Img']) ??
-                                                  Icon(Icons.fastfood)),
-                                        ),
-                                        title: stores['Name'],
+                                onTap: () {
+                                  // Navigator.of(context).push(MaterialPageRoute(
+                                  //     builder: (context) =>
+                                  //         VDonation(donationid: donate.id)));
+                                },
+                                child: Column(
+                                  children: [
+                                    CustomListTile(
+                                      onTap: () {
+                                        // Navigator.of(context).push(MaterialPageRoute(builder: (context) => VDonation(donationid: donate.id)));
+                                      },
+                                      user: stores['Owner'],
+                                      description: stores['StoreLocation'],
+                                      thumbnail: Container(
+                                        decoration: const BoxDecoration(
+                                            color: Colors.transparent),
+                                        child: Container(
+                                            constraints: BoxConstraints(
+                                                minHeight: 100,
+                                                minWidth: 100,
+                                                maxWidth: 150,
+                                                maxHeight: 160),
+                                            child:
+                                                Image.network(stores['Img']) ??
+                                                    Icon(Icons.fastfood)),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            right: 16.0, bottom: 8),
-                                        child: Align(
-                                            alignment: Alignment.topRight,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                Divider(),
-                                                RaisedButton(
-                                                  child: Text(
-                                                    "Add",
-                                                    style:
-                                                        TextStyle(fontSize: 14),
-                                                  ),
-                                                  onPressed: () {
-                                                    cart.addToCart(
-                                                        productId: stores.id,
-                                                        unitPrice:
-                                                            stores['Price'],
-                                                        productName:
-                                                            stores['Name']);
-
-                                                    // print(cart
-                                                    //     .getCartItemCount());
-                                                    //MenuService(mid: stores.id).deleteMenu();
-                                                    // Do something
-                                                  },
-                                                  color: Colors.blue,
-                                                  textColor: Colors.white,
-                                                  padding: EdgeInsets.all(1.0),
-                                                  splashColor: Colors.grey,
-                                                ),
-                                              ],
-                                            )),
-                                      ),
-                                    ],
-                                  )),
+                                      title: stores['StoreName'],
+                                    ),
+                                  ],
+                                ),
+                              ),
                             );
                           },
                         ),
                       ),
                     );
                   }),
+              Container(),
             ],
           ),
         ),
@@ -328,33 +291,6 @@ class _CartCState extends State<CartC> {
                 itemBuilder: (BuildContext context, int index) {
                   return ListTile(
                     leading: Icon(Icons.fastfood, size: 30),
-                    // trailing: Row(
-                    //   mainAxisSize: MainAxisSize.min,
-                    //   children: [
-                    //     // Container(
-                    //     //   margin: EdgeInsets.only(right: 10),
-                    //     //   child: new IconButton(
-                    //     //     icon: new Icon(Icons.remove),
-                    //     //     onPressed: () {
-                    //     //       cart.decrementItemFromCart(index);
-                    //     //       setState(() {});
-                    //     //     },
-                    //     //   ),
-                    //     // ),
-                    //     // Container(
-                    //     //   margin: EdgeInsets.only(right: 10),
-                    //     //   child: new IconButton(
-                    //     //     icon: new Icon(Icons.add),
-                    //     //     onPressed: () {
-                    //     //       cart.incrementItemToCart(index);
-                    //     //       setState(() {});
-                    //     //     },
-                    //     //   ),
-                    //     // ),
-                    //     VerticalDivider(),
-                    //     Icon(Icons.delete),
-                    //   ],
-                    // ),
                     title: Text(cart.cartItem[index].productName),
                     subtitle: Text(cart.cartItem[index].quantity.toString() +
                         " - RM " +
@@ -386,13 +322,6 @@ class _CartCState extends State<CartC> {
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 30)),
-                // ElevatedButton.icon(
-                //     style: ButtonStyle(
-                //         backgroundColor:
-                //             MaterialStateProperty.all(Colors.greenAccent)),
-                //     onPressed: () {},
-                //     icon: Icon(Icons.payment),
-                //     label: Text('Confirm Order')),
                 Text('Thanks For Your Purchase !'),
                 Container(
                   height: 20,

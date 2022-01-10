@@ -4,50 +4,47 @@ import 'package:eazystore/Home/home.dart';
 import 'package:eazystore/Home/homeGuest.dart';
 import 'package:eazystore/Models/Store.dart';
 import 'package:eazystore/Models/User.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Wrapper extends StatelessWidget {
+  bool exist;
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserM>(context);
     final store = Provider.of<Store>(context);
 
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    Future<bool> checkExist() async {
+      try {
+        await FirebaseFirestore.instance
+            .collection('Users')
+            .doc(user.uid)
+            .get()
+            .then((doc) {
+          exist = doc.exists;
+        });
+        return exist;
+      } catch (e) {
+        // If any error
+        return false;
+      }
+    }
+
+    Widget getScreen() {
+      if (checkExist() == true) {
+        print('User exist');
+        return HomePage();
+      } else {
+        print(checkExist());
+        return HomePageGuest();
+      }
+    }
 
     if (user == null) {
       return Authenticate();
+    } else {
+      return getScreen();
     }
-
-    return FutureBuilder<DocumentSnapshot>(
-      future: users.doc(user.uid).get(),
-      builder:
-          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-        if (snapshot.hasError) {
-          return Text("Something went wrong");
-        }
-
-        if (snapshot.hasData && snapshot.data.exists) {
-          return HomePage();
-        }
-        return HomePageGuest();
-      },
-    );
-
-    // DocumentSnapshot  meh = FirebaseFirestore.instance.collection('Users').doc(user.uid).get() as DocumentSnapshot<Object>;
-
-    //  Widget _getStatus() {
-
-    //     };
-
-    //     if (user == null) {
-    //       return Authenticate();
-    //     } else {
-    //       return _getStatus();
-    //     }
-
-    //     //will return Home or Authenticate based on user
-    //   }
   }
 }
