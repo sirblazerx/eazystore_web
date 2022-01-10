@@ -14,7 +14,7 @@ class AuthService {
   //auth change user stream
 
   Stream<UserM> get user {
-    return _auth.authStateChanges().map(
+    return _auth.userChanges().map(
         _userModel); // mapping user that get from stream to follow user model requirements
   }
 
@@ -72,7 +72,7 @@ class AuthService {
       return await _auth.signOut();
     } catch (e) {
       print(e.toString());
-      return null;
+      return _auth.currentUser;
     }
   }
 }

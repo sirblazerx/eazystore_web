@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Wrapper extends StatelessWidget {
-  bool exist;
+  bool exist = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +32,11 @@ class Wrapper extends StatelessWidget {
     }
 
     Widget getScreen() {
-      if (checkExist() == true) {
+      if (exist == true) {
         print('User exist');
         return HomePage();
       } else {
-        print(checkExist());
+        print("User Doesnt Exist");
         return HomePageGuest();
       }
     }
@@ -44,6 +44,7 @@ class Wrapper extends StatelessWidget {
     if (user == null) {
       return Authenticate();
     } else {
+      checkExist();
       return getScreen();
     }
   }
