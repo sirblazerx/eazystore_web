@@ -18,6 +18,9 @@ import 'package:provider/provider.dart';
 import 'package:flutter_cart/flutter_cart.dart';
 
 var cart = FlutterCart();
+List<DocumentSnapshot> FoodList;
+List<DocumentSnapshot> DrinksList;
+List<DocumentSnapshot> DessertsList;
 
 class HomePage extends StatelessWidget {
   @override
@@ -151,97 +154,73 @@ class HomePage extends StatelessWidget {
                       .where('StoreId', isEqualTo: user.uid)
                       .snapshots(),
                   builder: (context, snapshot) {
-                    if (snapshot.data == null) {
+                    if (snapshot.hasData) {
+                      List<DocumentSnapshot> items = snapshot.data.docs;
+                      FoodList = items.where((i) => i["Category"] == "Foods").toList();
+                      DrinksList = items.where((i) => i["Category"] == "Drinks").toList();
+                      DessertsList = items.where((i) => i["Category"] == "Desserts").toList();
+                    }
+                    /*if (snapshot.data == null) {
                       return Loading();
                     }
+                    else
+                    {
+                      List<DocumentSnapshot> items = snapshot.data.documents;
+                      List FoodList = items.where((i) => i["stores"] == "Foods").toList();
+                      List DrinksList = items.where((i) => i["stores"] == "Drinks").toList();
+                      List DessertsList = items.where((i) => i["stores"] == "Desserts").toList();
+
+                    }*/
 
                     return Expanded(
-                      child: Card(
-                        margin: const EdgeInsets.symmetric(vertical: 20.0),
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: snapshot.data.docs.length,
-                          scrollDirection: Axis.vertical,
-                          //physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            DocumentSnapshot stores = snapshot.data.docs[index];
+                      child : DefaultTabController(
+                        length: 3,
+                        child: Scaffold(
+                          appBar: new TabBar(
+                            labelColor: Colors.black,
+                            indicatorColor: Theme.of(context).primaryColor,
+                            tabs: [
+                              Tab(icon: Icon(Icons.local_dining)),
+                              Tab(icon: Icon(Icons.emoji_food_beverage)),
+                              Tab(icon: Icon(Icons.icecream)),
+                            ],
+                          ),
+                          body: TabBarView(
+                            children: [
+                              ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: FoodList.length,
+                                scrollDirection: Axis.vertical,
+                                itemBuilder: (context, index) {
+                                  DocumentSnapshot item = FoodList.elementAt(index);
+                                  return MenuTile(item : item);
+                                },
+                              ),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: DrinksList.length,
+                                scrollDirection: Axis.vertical,
+                                itemBuilder: (context, index) {
+                                  DocumentSnapshot item = DrinksList.elementAt(index);
+                                  return MenuTile(item : item);
 
-                            return Card(
-                              margin:
-                                  const EdgeInsets.symmetric(vertical: 20.0),
-                              child: InkWell(
-                                  onTap: () {
-                                    // Navigator.of(context).push(MaterialPageRoute(
-                                    //     builder: (context) =>
-                                    //         VDonation(donationid: donate.id)));
-                                  },
-                                  child: Column(
-                                    children: [
-                                      CustomListTile(
-                                        onTap: () {
-                                          // Navigator.of(context).push(MaterialPageRoute(builder: (context) => VDonation(donationid: donate.id)));
-                                        },
-                                        user:
-                                            "RM " + stores['Price'].toString(),
-                                        description: stores['Desc'],
-                                        thumbnail: Container(
-                                          decoration: const BoxDecoration(
-                                              color: Colors.transparent),
-                                          child: Container(
-                                              constraints: BoxConstraints(
-                                                  minHeight: 100,
-                                                  minWidth: 100,
-                                                  maxWidth: 150,
-                                                  maxHeight: 160),
-                                              child: Image.network(
-                                                      stores['Img']) ??
-                                                  Icon(Icons.fastfood)),
-                                        ),
-                                        title: stores['Name'],
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            right: 16.0, bottom: 8),
-                                        child: Align(
-                                            alignment: Alignment.topRight,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                Divider(),
-                                                RaisedButton(
-                                                  child: Text(
-                                                    "Add",
-                                                    style:
-                                                        TextStyle(fontSize: 14),
-                                                  ),
-                                                  onPressed: () {
-                                                    cart.addToCart(
-                                                        productId: stores.id,
-                                                        unitPrice:
-                                                            stores['Price'],
-                                                        productName:
-                                                            stores['Name']);
+                                },
+                              ),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: DessertsList.length,
+                                scrollDirection: Axis.vertical,
+                                itemBuilder: (context, index) {
+                                  DocumentSnapshot item = DessertsList.elementAt(index);
+                                  return MenuTile(item : item);
 
-                                                    // print(cart
-                                                    //     .getCartItemCount());
-                                                    //MenuService(mid: stores.id).deleteMenu();
-                                                    // Do something
-                                                  },
-                                                  color: Colors.blue,
-                                                  textColor: Colors.white,
-                                                  padding: EdgeInsets.all(1.0),
-                                                  splashColor: Colors.grey,
-                                                ),
-                                              ],
-                                            )),
-                                      ),
-                                    ],
-                                  )),
-                            );
-                          },
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
+
                     );
                   }),
             ],
@@ -250,6 +229,8 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+
+
 
   void _goToCart(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => Cart()));
@@ -454,3 +435,88 @@ class _CartCState extends State<CartC> {
     );
   }
 }
+
+class MenuTile extends StatelessWidget{
+
+  MenuTile({Key key, this.item}) : super(key: key);
+  final DocumentSnapshot item;
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Card(
+      margin:
+      const EdgeInsets.symmetric(vertical: 20.0),
+      child: InkWell(
+          onTap: () {
+            // Navigator.of(context).push(MaterialPageRoute(
+            //     builder: (context) =>
+            //         VDonation(donationid: donate.id)));
+          },
+          child: Column(
+            children: [
+              CustomListTile(
+                onTap: () {
+                  // Navigator.of(context).push(MaterialPageRoute(builder: (context) => VDonation(donationid: donate.id)));
+                },
+                user:
+                "RM " + item['Price'].toString(),
+                description: item['Desc'],
+                thumbnail: Container(
+                  decoration: const BoxDecoration(
+                      color: Colors.transparent),
+                  child: Container(
+                      constraints: BoxConstraints(
+                          minHeight: 100,
+                          minWidth: 100,
+                          maxWidth: 150,
+                          maxHeight: 160),
+                      child: Image.network(
+                          item['Img']) ??
+                          Icon(Icons.fastfood)),
+                ),
+                title: item['Name'],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    right: 16.0, bottom: 8),
+                child: Align(
+                    alignment: Alignment.topRight,
+                    child: Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment.end,
+                      children: [
+                        Divider(),
+                        RaisedButton(
+                          child: Text(
+                            "Add",
+                            style:
+                            TextStyle(fontSize: 14),
+                          ),
+                          onPressed: () {
+                            cart.addToCart(
+                                productId: item.id,
+                                unitPrice:
+                                item['Price'],
+                                productName:
+                                item['Name']);
+
+                            // print(cart
+                            //     .getCartItemCount());
+                            //MenuService(mid: stores.id).deleteMenu();
+                            // Do something
+                          },
+                          color: Colors.blue,
+                          textColor: Colors.white,
+                          padding: EdgeInsets.all(1.0),
+                          splashColor: Colors.grey,
+                        ),
+                      ],
+                    )),
+              ),
+            ],
+          )),
+    );
+  }
+}
+
