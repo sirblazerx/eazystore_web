@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eazystore/Auth/sign_in.dart';
 import 'package:eazystore/Custom/customlist.dart';
 import 'package:eazystore/Custom/loading.dart';
+import 'package:eazystore/Menu/MenuPage.dart';
 import 'package:eazystore/Models/Store.dart';
 import 'package:eazystore/Models/User.dart';
 import 'package:eazystore/QR%20Scanner/Qr.dart';
@@ -17,7 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_cart/flutter_cart.dart';
 
-var cart = FlutterCart();
+// var cart = FlutterCart();
 
 class HomePageGuest extends StatelessWidget {
   @override
@@ -30,7 +31,7 @@ class HomePageGuest extends StatelessWidget {
     final user = Provider.of<UserM>(context);
     final store = Provider.of<Store>(context);
 
-    cart.deleteAllCart();
+    // cart.deleteAllCart();
 
     // FirebaseFirestore.instance
     //     .collection('Store')
@@ -51,17 +52,17 @@ class HomePageGuest extends StatelessWidget {
         appBar: AppBar(
           title: Text('Eazystore Guest'),
           centerTitle: true,
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.shopping_cart,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                _goToCart(context);
-              },
-            )
-          ],
+          // actions: <Widget>[
+          //   IconButton(
+          //     icon: Icon(
+          //       Icons.shopping_cart,
+          //       color: Colors.white,
+          //     ),
+          //     onPressed: () {
+          //       _goToCart(context);
+          //     },
+          //   )
+          // ],
         ),
         drawer: Drawer(
           child: ListView(
@@ -122,16 +123,14 @@ class HomePageGuest extends StatelessWidget {
                                   const EdgeInsets.symmetric(vertical: 20.0),
                               child: InkWell(
                                 onTap: () {
-                                  // Navigator.of(context).push(MaterialPageRoute(
-                                  //     builder: (context) =>
-                                  //         VDonation(donationid: donate.id)));
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          MenuPage(stores['Uid'])));
                                 },
                                 child: Column(
                                   children: [
                                     CustomListTile(
-                                      onTap: () {
-                                        // Navigator.of(context).push(MaterialPageRoute(builder: (context) => VDonation(donationid: donate.id)));
-                                      },
+                                      onTap: () {},
                                       user: stores['Owner'] ?? '',
                                       description:
                                           stores['StoreLocation'] ?? '',
@@ -167,172 +166,172 @@ class HomePageGuest extends StatelessWidget {
     );
   }
 
-  void _goToCart(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => Cart()));
-  }
-}
+//   void _goToCart(BuildContext context) {
+//     Navigator.of(context).push(MaterialPageRoute(builder: (context) => Cart()));
+//   }
+// }
 
-class Cart extends StatefulWidget {
-  @override
-  _CartState createState() => _CartState();
-}
+// class Cart extends StatefulWidget {
+//   @override
+//   _CartState createState() => _CartState();
+// }
 
-class _CartState extends State<Cart> {
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Cart')),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: ListView.builder(
-                shrinkWrap: true, // <- added
-                primary: false,
-                itemCount: cart.getCartItemCount(),
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    leading: Icon(Icons.fastfood, size: 30),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(right: 10),
-                          child: new IconButton(
-                            icon: new Icon(Icons.remove),
-                            onPressed: () {
-                              cart.decrementItemFromCart(index);
-                              setState(() {});
-                            },
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(right: 10),
-                          child: new IconButton(
-                            icon: new Icon(Icons.add),
-                            onPressed: () {
-                              cart.incrementItemToCart(index);
-                              setState(() {});
-                            },
-                          ),
-                        ),
-                        VerticalDivider(),
-                        Icon(Icons.delete),
-                      ],
-                    ),
-                    title: Text(cart.cartItem[index].productName),
-                    subtitle: Text(cart.cartItem[index].quantity.toString() +
-                        " - RM " +
-                        (cart.cartItem[index].unitPrice *
-                                cart.cartItem[index].quantity)
-                            .toStringAsFixed(2)),
-                  );
-                  //return new Text(cart.cartItem[index].unitPrice.toString());
-                }),
-          ),
-          Container(
-            height: 200,
-            width: double.maxFinite,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(20.0))),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Text("Total :",
-                    style: TextStyle(
-                        color: Colors.grey[800],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20)),
-                Text("RM " + cart.getTotalAmount().toStringAsFixed(2),
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30)),
-                ElevatedButton.icon(
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.greenAccent[700])),
-                    onPressed: () {
-                      _confirmCart(context);
-                    },
-                    icon: Icon(Icons.payment),
-                    label: Text('Confirm Order')),
-                Container(
-                  height: 20,
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
+// class _CartState extends State<Cart> {
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: Text('Cart')),
+//       body: Column(
+//         children: <Widget>[
+//           Expanded(
+//             child: ListView.builder(
+//                 shrinkWrap: true, // <- added
+//                 primary: false,
+//                 itemCount: cart.getCartItemCount(),
+//                 itemBuilder: (BuildContext context, int index) {
+//                   return ListTile(
+//                     leading: Icon(Icons.fastfood, size: 30),
+//                     trailing: Row(
+//                       mainAxisSize: MainAxisSize.min,
+//                       children: [
+//                         Container(
+//                           margin: EdgeInsets.only(right: 10),
+//                           child: new IconButton(
+//                             icon: new Icon(Icons.remove),
+//                             onPressed: () {
+//                               cart.decrementItemFromCart(index);
+//                               setState(() {});
+//                             },
+//                           ),
+//                         ),
+//                         Container(
+//                           margin: EdgeInsets.only(right: 10),
+//                           child: new IconButton(
+//                             icon: new Icon(Icons.add),
+//                             onPressed: () {
+//                               cart.incrementItemToCart(index);
+//                               setState(() {});
+//                             },
+//                           ),
+//                         ),
+//                         VerticalDivider(),
+//                         Icon(Icons.delete),
+//                       ],
+//                     ),
+//                     title: Text(cart.cartItem[index].productName),
+//                     subtitle: Text(cart.cartItem[index].quantity.toString() +
+//                         " - RM " +
+//                         (cart.cartItem[index].unitPrice *
+//                                 cart.cartItem[index].quantity)
+//                             .toStringAsFixed(2)),
+//                   );
+//                   //return new Text(cart.cartItem[index].unitPrice.toString());
+//                 }),
+//           ),
+//           Container(
+//             height: 200,
+//             width: double.maxFinite,
+//             decoration: BoxDecoration(
+//                 color: Colors.white,
+//                 borderRadius:
+//                     BorderRadius.vertical(top: Radius.circular(20.0))),
+//             child: Column(
+//               mainAxisSize: MainAxisSize.max,
+//               mainAxisAlignment: MainAxisAlignment.end,
+//               children: <Widget>[
+//                 Text("Total :",
+//                     style: TextStyle(
+//                         color: Colors.grey[800],
+//                         fontWeight: FontWeight.bold,
+//                         fontSize: 20)),
+//                 Text("RM " + cart.getTotalAmount().toStringAsFixed(2),
+//                     style: TextStyle(
+//                         color: Colors.black,
+//                         fontWeight: FontWeight.bold,
+//                         fontSize: 30)),
+//                 ElevatedButton.icon(
+//                     style: ButtonStyle(
+//                         backgroundColor:
+//                             MaterialStateProperty.all(Colors.greenAccent[700])),
+//                     onPressed: () {
+//                       _confirmCart(context);
+//                     },
+//                     icon: Icon(Icons.payment),
+//                     label: Text('Confirm Order')),
+//                 Container(
+//                   height: 20,
+//                 ),
+//               ],
+//             ),
+//           )
+//         ],
+//       ),
+//     );
+//   }
+// }
 
-void _confirmCart(BuildContext context) {
-  Navigator.of(context).push(MaterialPageRoute(builder: (context) => CartC()));
-}
+// void _confirmCart(BuildContext context) {
+//   Navigator.of(context).push(MaterialPageRoute(builder: (context) => CartC()));
+// }
 
-class CartC extends StatefulWidget {
-  @override
-  _CartCState createState() => _CartCState();
-}
+// class CartC extends StatefulWidget {
+//   @override
+//   _CartCState createState() => _CartCState();
+// }
 
-class _CartCState extends State<CartC> {
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Confirmed Order')),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: ListView.builder(
-                shrinkWrap: true, // <- added
-                primary: false,
-                itemCount: cart.getCartItemCount(),
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    leading: Icon(Icons.fastfood, size: 30),
-                    title: Text(cart.cartItem[index].productName),
-                    subtitle: Text(cart.cartItem[index].quantity.toString() +
-                        " - RM " +
-                        (cart.cartItem[index].unitPrice *
-                                cart.cartItem[index].quantity)
-                            .toStringAsFixed(2)),
-                  );
-                  //return new Text(cart.cartItem[index].unitPrice.toString());
-                }),
-          ),
-          Container(
-            height: 200,
-            width: double.maxFinite,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(20.0))),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Text("Total :",
-                    style: TextStyle(
-                        color: Colors.grey[800],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20)),
-                Text("RM " + cart.getTotalAmount().toStringAsFixed(2),
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30)),
-                Text('Thanks For Your Purchase !'),
-                Container(
-                  height: 20,
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
+// class _CartCState extends State<CartC> {
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: Text('Confirmed Order')),
+//       body: Column(
+//         children: <Widget>[
+//           Expanded(
+//             child: ListView.builder(
+//                 shrinkWrap: true, // <- added
+//                 primary: false,
+//                 itemCount: cart.getCartItemCount(),
+//                 itemBuilder: (BuildContext context, int index) {
+//                   return ListTile(
+//                     leading: Icon(Icons.fastfood, size: 30),
+//                     title: Text(cart.cartItem[index].productName),
+//                     subtitle: Text(cart.cartItem[index].quantity.toString() +
+//                         " - RM " +
+//                         (cart.cartItem[index].unitPrice *
+//                                 cart.cartItem[index].quantity)
+//                             .toStringAsFixed(2)),
+//                   );
+//                   //return new Text(cart.cartItem[index].unitPrice.toString());
+//                 }),
+//           ),
+//           Container(
+//             height: 200,
+//             width: double.maxFinite,
+//             decoration: BoxDecoration(
+//                 color: Colors.white,
+//                 borderRadius:
+//                     BorderRadius.vertical(top: Radius.circular(20.0))),
+//             child: Column(
+//               mainAxisSize: MainAxisSize.max,
+//               mainAxisAlignment: MainAxisAlignment.end,
+//               children: <Widget>[
+//                 Text("Total :",
+//                     style: TextStyle(
+//                         color: Colors.grey[800],
+//                         fontWeight: FontWeight.bold,
+//                         fontSize: 20)),
+//                 Text("RM " + cart.getTotalAmount().toStringAsFixed(2),
+//                     style: TextStyle(
+//                         color: Colors.black,
+//                         fontWeight: FontWeight.bold,
+//                         fontSize: 30)),
+//                 Text('Thanks For Your Purchase !'),
+//                 Container(
+//                   height: 20,
+//                 ),
+//               ],
+//             ),
+//           )
+//         ],
+//       ),
+//     );
+//   }
 }
