@@ -102,6 +102,7 @@ class HomePageGuest extends StatelessWidget {
                       .collection('Store')
                       .snapshots(),
                   builder: (context, snapshot) {
+                    List<DocumentSnapshot> meh = snapshot.data.docs;
                     if (snapshot.data == null) {
                       return Loading();
                     }
@@ -110,7 +111,7 @@ class HomePageGuest extends StatelessWidget {
                         margin: const EdgeInsets.symmetric(vertical: 20.0),
                         child: ListView.builder(
                           shrinkWrap: true,
-                          itemCount: snapshot.data.docs.length,
+                          itemCount: meh.length,
                           scrollDirection: Axis.vertical,
                           //physics: NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
@@ -131,8 +132,9 @@ class HomePageGuest extends StatelessWidget {
                                       onTap: () {
                                         // Navigator.of(context).push(MaterialPageRoute(builder: (context) => VDonation(donationid: donate.id)));
                                       },
-                                      user: stores['Owner'],
-                                      description: stores['StoreLocation'],
+                                      user: stores['Owner'] ?? '',
+                                      description:
+                                          stores['StoreLocation'] ?? '',
                                       thumbnail: Container(
                                         decoration: const BoxDecoration(
                                             color: Colors.transparent),
@@ -146,7 +148,7 @@ class HomePageGuest extends StatelessWidget {
                                                 Image.network(stores['Img']) ??
                                                     Icon(Icons.fastfood)),
                                       ),
-                                      title: stores['StoreName'],
+                                      title: stores['StoreName'] ?? '',
                                     ),
                                   ],
                                 ),
