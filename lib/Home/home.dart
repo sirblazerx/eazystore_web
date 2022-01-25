@@ -7,8 +7,10 @@ import 'package:eazystore/Custom/customlist.dart';
 import 'package:eazystore/Custom/loading.dart';
 import 'package:eazystore/Models/Store.dart';
 import 'package:eazystore/Models/User.dart';
+import 'package:eazystore/Models/Order.dart';
+import 'package:eazystore/Order/OrderHistory.dart';
 import 'package:eazystore/QR%20Scanner/Qr.dart';
-import 'package:eazystore/Services/StoreService.dart';
+import 'package:eazystore/Services/Order_Service.dart';
 import 'package:eazystore/Services/UserDB.dart';
 import 'package:eazystore/Services/authservice.dart';
 import 'package:eazystore/Store/event/StorePageList.dart';
@@ -99,6 +101,18 @@ class HomePage extends StatelessWidget {
                             },
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListTile(
+                            title: Text('Order History'),
+                            leading: Icon(Icons.store),
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => OrderHistory()));
+                            },
+                          ),
+                        ),
+
                         Divider(),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -147,7 +161,7 @@ class HomePage extends StatelessWidget {
                   child: Text('Our Menus',
                       textAlign: TextAlign.center,
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
                 ),
               ),
               Divider(),
@@ -233,8 +247,6 @@ class HomePage extends StatelessWidget {
     );
   }
 
-
-
   void _goToCart(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => Cart()));
   }
@@ -290,7 +302,7 @@ class _CartState extends State<Cart> {
                     subtitle: Text(cart.cartItem[index].quantity.toString() +
                         " - RM " +
                         (cart.cartItem[index].unitPrice *
-                                cart.cartItem[index].quantity)
+                            cart.cartItem[index].quantity)
                             .toStringAsFixed(2)),
                   );
                   //return new Text(cart.cartItem[index].unitPrice.toString());
@@ -302,7 +314,7 @@ class _CartState extends State<Cart> {
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(20.0))),
+                BorderRadius.vertical(top: Radius.circular(20.0))),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.end,
@@ -320,7 +332,7 @@ class _CartState extends State<Cart> {
                 ElevatedButton.icon(
                     style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all(Colors.greenAccent[700])),
+                        MaterialStateProperty.all(Colors.greenAccent[700])),
                     onPressed: () {
                       ConfirmOrderDialog(context);
                       //_confirmCart(context);
@@ -393,7 +405,7 @@ class _CartCState extends State<CartC> {
                     subtitle: Text(cart.cartItem[index].quantity.toString() +
                         " - RM " +
                         (cart.cartItem[index].unitPrice *
-                                cart.cartItem[index].quantity)
+                            cart.cartItem[index].quantity)
                             .toStringAsFixed(2)),
                   );
                   //return new Text(cart.cartItem[index].unitPrice.toString());
@@ -405,7 +417,7 @@ class _CartCState extends State<CartC> {
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(20.0))),
+                BorderRadius.vertical(top: Radius.circular(20.0))),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.end,
@@ -527,6 +539,7 @@ class MenuTile extends StatelessWidget{
 
 //confirm order dialog
 Future<void> ConfirmOrderDialog(BuildContext context) async {
+  final user = Provider.of<UserM>(context, listen: false);
   TextEditingController _textFieldController = TextEditingController();
   String tableNumber;
   return showDialog(
@@ -541,25 +554,38 @@ Future<void> ConfirmOrderDialog(BuildContext context) async {
           ),
           content: TextField(
             onChanged: (val) {
-                tableNumber = val;
+              tableNumber = val;
             },
             controller: _textFieldController,
             decoration: InputDecoration(hintText: "Please enter your table no."),
           ),
           actions: <Widget>[
             TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel', style: TextStyle(color: Colors.green))
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel', style: TextStyle(color: Colors.green))
             ),
             TextButton(
-              onPressed: () {
-                Random random = new Random();
-                if(tableNumber == null)
-                  tableNumber = random.nextInt(20).toString();
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => Receipt(tableNumber: tableNumber,)));
+                onPressed: () async {
+                  Random random = new Random();
+                  if(tableNumber == null)
+                    tableNumber = random.nextInt(20).toString();
 
-              },
-              child: const Text('Confirm', style: TextStyle(color: Colors.green))
+                  String cartDetails = "";
+                  for(int i=0;i<cart.getCartItemCount();i++){
+                    if(i+1 == cart.getCartItemCount())
+                      cartDetails = cartDetails + cart.cartItem[i].productName.toString()+" (RM"+cart.cartItem[i].unitPrice.toString()+" x "+cart.cartItem[i].quantity.toString()+")";
+
+                    else
+                      cartDetails = cartDetails + cart.cartItem[i].productName.toString()+" (RM"+cart.cartItem[i].unitPrice.toString()+" x "+cart.cartItem[i].quantity.toString()+")\\n";
+
+                  }
+
+                  await OrderService(mid: user.uid).addOrder(cart.getTotalAmount(), cartDetails, user.uid);
+
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => Receipt(tableNumber: tableNumber,)));
+
+                },
+                child: const Text('Confirm', style: TextStyle(color: Colors.green))
             ),
           ],
         );
@@ -596,67 +622,67 @@ class Receipt extends StatelessWidget{
                 children: [
                   Expanded(
                     child: Container(
-                        child: Container(
-                          padding: EdgeInsets.all(24),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                    'Order #'+random.nextInt(100000).toString(),
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700),
+                      child: Container(
+                        padding: EdgeInsets.all(24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Text(
+                                  'Order #'+random.nextInt(100000).toString(),
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                Expanded(child: Container()),
+                                RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: getCurrentDate(),
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ],
                                   ),
-                                  Expanded(child: Container()),
-                                  RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: getCurrentDate(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 14),
-                              Text(
-                                'Table No: '+ tableNumber.toString(),
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              SizedBox(height: 10),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 14),
+                            Text(
+                              'Table No: '+ tableNumber.toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            SizedBox(height: 10),
 
-                              ListView.builder(
-                                  shrinkWrap: true, // <- added
-                                  primary: false,
-                                  itemExtent: 25,
-                                  itemCount: cart.getCartItemCount(),
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return ListTile(
-                                      trailing: Text(cart.cartItem[index].quantity.toString() +
-                                          " - RM " +
-                                          (cart.cartItem[index].unitPrice *
-                                              cart.cartItem[index].quantity)
-                                              .toStringAsFixed(2)),
-                                      title: Text(cart.cartItem[index].productName),
-                                    );
-                                    //return new Text(cart.cartItem[index].unitPrice.toString());
-                                  }),
-                              SizedBox(height: 35),
-                            ],
-                          ),
+                            ListView.builder(
+                                shrinkWrap: true, // <- added
+                                primary: false,
+                                itemExtent: 25,
+                                itemCount: cart.getCartItemCount(),
+                                itemBuilder: (BuildContext context, int index) {
+                                  return ListTile(
+                                    trailing: Text(cart.cartItem[index].quantity.toString() +
+                                        " - RM " +
+                                        (cart.cartItem[index].unitPrice *
+                                            cart.cartItem[index].quantity)
+                                            .toStringAsFixed(2)),
+                                    title: Text(cart.cartItem[index].productName),
+                                  );
+                                  //return new Text(cart.cartItem[index].unitPrice.toString());
+                                }),
+                            SizedBox(height: 35),
+                          ],
                         ),
                       ),
+                    ),
 
 
                   ),

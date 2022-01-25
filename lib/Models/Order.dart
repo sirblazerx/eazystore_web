@@ -2,39 +2,36 @@ import 'package:flutter/material.dart';
 
 class Order {
   final String OrderID;
-  final String MenuId;
-  final String Name;
-  final String ClientName;
+  final String StoreId;
+  final String Details;
   final double Price;
-  final int Quantity;
+  final DateTime Time;
 
   Order(
       {this.OrderID,
-      this.MenuId,
-      this.Name,
-      this.ClientName,
-      this.Price,
-      this.Quantity});
+        this.StoreId,
+        this.Details,
+        this.Price,
+        this.Time,
+      });
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       OrderID: json['OrderID'],
-      MenuId: json['MenuId'],
-      Name: json['Name'],
-      ClientName: json['ClientName'],
+      StoreId: json['StoreId'],
+      Details: json['Details'],
       Price: json['Price'],
-      Quantity: json['Quantitiy'],
+      Time: json['Time'],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'OrderID': OrderID,
-      'MenuId': MenuId,
-      'Name': Name,
-      'ClientName': ClientName,
+      'StoreId': StoreId,
+      'Details': Details,
       'Price': Price,
-      'Quantity': Quantity,
+      'Time': Time,
     };
   }
 }
