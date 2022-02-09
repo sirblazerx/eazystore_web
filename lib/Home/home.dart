@@ -21,7 +21,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_cart/flutter_cart.dart';
 import 'package:ticketview/ticketview.dart';
 
-
 var cart = FlutterCart();
 List<DocumentSnapshot> FoodList;
 List<DocumentSnapshot> DrinksList;
@@ -112,7 +111,6 @@ class HomePage extends StatelessWidget {
                             },
                           ),
                         ),
-
                         Divider(),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -161,7 +159,7 @@ class HomePage extends StatelessWidget {
                   child: Text('Our Menus',
                       textAlign: TextAlign.center,
                       style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
                 ),
               ),
               Divider(),
@@ -173,9 +171,14 @@ class HomePage extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<DocumentSnapshot> items = snapshot.data.docs;
-                      FoodList = items.where((i) => i["Category"] == "Foods").toList();
-                      DrinksList = items.where((i) => i["Category"] == "Drinks").toList();
-                      DessertsList = items.where((i) => i["Category"] == "Desserts").toList();
+                      FoodList =
+                          items.where((i) => i["Category"] == "Foods").toList();
+                      DrinksList = items
+                          .where((i) => i["Category"] == "Drinks")
+                          .toList();
+                      DessertsList = items
+                          .where((i) => i["Category"] == "Desserts")
+                          .toList();
                     }
                     /*if (snapshot.data == null) {
                       return Loading();
@@ -190,7 +193,7 @@ class HomePage extends StatelessWidget {
                     }*/
 
                     return Expanded(
-                      child : DefaultTabController(
+                      child: DefaultTabController(
                         length: 3,
                         child: Scaffold(
                           appBar: new TabBar(
@@ -209,8 +212,9 @@ class HomePage extends StatelessWidget {
                                 itemCount: FoodList.length,
                                 scrollDirection: Axis.vertical,
                                 itemBuilder: (context, index) {
-                                  DocumentSnapshot item = FoodList.elementAt(index);
-                                  return MenuTile(item : item);
+                                  DocumentSnapshot item =
+                                      FoodList.elementAt(index);
+                                  return MenuTile(item: item);
                                 },
                               ),
                               ListView.builder(
@@ -218,9 +222,9 @@ class HomePage extends StatelessWidget {
                                 itemCount: DrinksList.length,
                                 scrollDirection: Axis.vertical,
                                 itemBuilder: (context, index) {
-                                  DocumentSnapshot item = DrinksList.elementAt(index);
-                                  return MenuTile(item : item);
-
+                                  DocumentSnapshot item =
+                                      DrinksList.elementAt(index);
+                                  return MenuTile(item: item);
                                 },
                               ),
                               ListView.builder(
@@ -228,16 +232,15 @@ class HomePage extends StatelessWidget {
                                 itemCount: DessertsList.length,
                                 scrollDirection: Axis.vertical,
                                 itemBuilder: (context, index) {
-                                  DocumentSnapshot item = DessertsList.elementAt(index);
-                                  return MenuTile(item : item);
-
+                                  DocumentSnapshot item =
+                                      DessertsList.elementAt(index);
+                                  return MenuTile(item: item);
                                 },
                               ),
                             ],
                           ),
                         ),
                       ),
-
                     );
                   }),
             ],
@@ -302,7 +305,7 @@ class _CartState extends State<Cart> {
                     subtitle: Text(cart.cartItem[index].quantity.toString() +
                         " - RM " +
                         (cart.cartItem[index].unitPrice *
-                            cart.cartItem[index].quantity)
+                                cart.cartItem[index].quantity)
                             .toStringAsFixed(2)),
                   );
                   //return new Text(cart.cartItem[index].unitPrice.toString());
@@ -314,7 +317,7 @@ class _CartState extends State<Cart> {
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius:
-                BorderRadius.vertical(top: Radius.circular(20.0))),
+                    BorderRadius.vertical(top: Radius.circular(20.0))),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.end,
@@ -332,7 +335,7 @@ class _CartState extends State<Cart> {
                 ElevatedButton.icon(
                     style: ButtonStyle(
                         backgroundColor:
-                        MaterialStateProperty.all(Colors.greenAccent[700])),
+                            MaterialStateProperty.all(Colors.greenAccent[700])),
                     onPressed: () {
                       ConfirmOrderDialog(context);
                       //_confirmCart(context);
@@ -350,6 +353,7 @@ class _CartState extends State<Cart> {
     );
   }
 }
+
 //carts navigation
 void _confirmCart(BuildContext context) {
   Navigator.of(context).push(MaterialPageRoute(builder: (context) => CartC()));
@@ -405,7 +409,7 @@ class _CartCState extends State<CartC> {
                     subtitle: Text(cart.cartItem[index].quantity.toString() +
                         " - RM " +
                         (cart.cartItem[index].unitPrice *
-                            cart.cartItem[index].quantity)
+                                cart.cartItem[index].quantity)
                             .toStringAsFixed(2)),
                   );
                   //return new Text(cart.cartItem[index].unitPrice.toString());
@@ -417,7 +421,7 @@ class _CartCState extends State<CartC> {
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius:
-                BorderRadius.vertical(top: Radius.circular(20.0))),
+                    BorderRadius.vertical(top: Radius.circular(20.0))),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.end,
@@ -453,17 +457,14 @@ class _CartCState extends State<CartC> {
 }
 
 //display menu by list
-class MenuTile extends StatelessWidget{
-
+class MenuTile extends StatelessWidget {
   MenuTile({Key key, this.item}) : super(key: key);
   final DocumentSnapshot item;
 
   @override
   Widget build(BuildContext context) {
-
     return Card(
-      margin:
-      const EdgeInsets.symmetric(vertical: 20.0),
+      margin: const EdgeInsets.symmetric(vertical: 20.0),
       child: InkWell(
           onTap: () {
             // Navigator.of(context).push(MaterialPageRoute(
@@ -476,47 +477,39 @@ class MenuTile extends StatelessWidget{
                 onTap: () {
                   // Navigator.of(context).push(MaterialPageRoute(builder: (context) => VDonation(donationid: donate.id)));
                 },
-                user:
-                "RM " + item['Price'].toString(),
+                user: "RM " + item['Price'].toString(),
                 description: item['Desc'],
                 thumbnail: Container(
-                  decoration: const BoxDecoration(
-                      color: Colors.transparent),
+                  decoration: const BoxDecoration(color: Colors.transparent),
                   child: Container(
                       constraints: BoxConstraints(
                           minHeight: 100,
                           minWidth: 100,
                           maxWidth: 150,
                           maxHeight: 160),
-                      child: Image.network(
-                          item['Img']) ??
-                          Icon(Icons.fastfood)),
+                      child:
+                          Image.network(item['Img']) ?? Icon(Icons.fastfood)),
                 ),
                 title: item['Name'],
               ),
               Padding(
-                padding: const EdgeInsets.only(
-                    right: 16.0, bottom: 8),
+                padding: const EdgeInsets.only(right: 16.0, bottom: 8),
                 child: Align(
                     alignment: Alignment.topRight,
                     child: Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Divider(),
                         RaisedButton(
                           child: Text(
                             "Add",
-                            style:
-                            TextStyle(fontSize: 14),
+                            style: TextStyle(fontSize: 14),
                           ),
                           onPressed: () {
                             cart.addToCart(
                                 productId: item.id,
-                                unitPrice:
-                                item['Price'],
-                                productName:
-                                item['Name']);
+                                unitPrice: item['Price'],
+                                productName: item['Name']);
 
                             // print(cart
                             //     .getCartItemCount());
@@ -546,53 +539,68 @@ Future<void> ConfirmOrderDialog(BuildContext context) async {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Row(
-              children: <Widget>[
-                Icon(Icons.payment),
-                Text(" Confirm order"),
-              ]
-          ),
+          title: Row(children: <Widget>[
+            Icon(Icons.payment),
+            Text(" Confirm order"),
+          ]),
           content: TextField(
             onChanged: (val) {
               tableNumber = val;
             },
             controller: _textFieldController,
-            decoration: InputDecoration(hintText: "Please enter your table no."),
+            decoration:
+                InputDecoration(hintText: "Please enter your table no."),
           ),
           actions: <Widget>[
             TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel', style: TextStyle(color: Colors.green))
-            ),
+                child: const Text('Cancel',
+                    style: TextStyle(color: Colors.green))),
             TextButton(
                 onPressed: () async {
                   Random random = new Random();
-                  if(tableNumber == null)
+                  if (tableNumber == null)
                     tableNumber = random.nextInt(20).toString();
 
                   String cartDetails = "";
-                  for(int i=0;i<cart.getCartItemCount();i++){
-                    if(i+1 == cart.getCartItemCount())
-                      cartDetails = cartDetails + cart.cartItem[i].productName.toString()+" (RM"+cart.cartItem[i].unitPrice.toString()+" x "+cart.cartItem[i].quantity.toString()+")";
-
+                  for (int i = 0; i < cart.getCartItemCount(); i++) {
+                    if (i + 1 == cart.getCartItemCount())
+                      cartDetails = cartDetails +
+                          cart.cartItem[i].productName.toString() +
+                          " (RM" +
+                          cart.cartItem[i].unitPrice.toString() +
+                          " x " +
+                          cart.cartItem[i].quantity.toString() +
+                          ")";
                     else
-                      cartDetails = cartDetails + cart.cartItem[i].productName.toString()+" (RM"+cart.cartItem[i].unitPrice.toString()+" x "+cart.cartItem[i].quantity.toString()+")\\n";
-
+                      cartDetails = cartDetails +
+                          cart.cartItem[i].productName.toString() +
+                          " (RM" +
+                          cart.cartItem[i].unitPrice.toString() +
+                          " x " +
+                          cart.cartItem[i].quantity.toString() +
+                          ")\\n";
                   }
 
-                  await OrderService(mid: user.uid).addOrder(cart.getTotalAmount(), cartDetails, user.uid);
+                  await OrderService(mid: user.uid).addOrder(
+                      cart.getTotalAmount(),
+                      cartDetails,
+                      user.uid,
+                      tableNumber);
 
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => Receipt(tableNumber: tableNumber,)));
-
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => Receipt(
+                            tableNumber: tableNumber,
+                          )));
                 },
-                child: const Text('Confirm', style: TextStyle(color: Colors.green))
-            ),
+                child: const Text('Confirm',
+                    style: TextStyle(color: Colors.green))),
           ],
         );
       });
 }
 
-class Receipt extends StatelessWidget{
+class Receipt extends StatelessWidget {
   final String tableNumber;
 
   Receipt({Key key, this.tableNumber}) : super(key: key);
@@ -606,9 +614,11 @@ class Receipt extends StatelessWidget{
         children: <Widget>[
           Expanded(
             child: TicketView(
-              backgroundPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+              backgroundPadding:
+                  EdgeInsets.symmetric(vertical: 0, horizontal: 20),
               backgroundColor: Colors.grey,
-              contentPadding: EdgeInsets.symmetric(vertical: 24, horizontal: 15),
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 24, horizontal: 15),
               drawArc: false,
               triangleAxis: Axis.vertical,
               borderRadius: 6,
@@ -630,7 +640,7 @@ class Receipt extends StatelessWidget{
                             Row(
                               children: <Widget>[
                                 Text(
-                                  'Order #'+random.nextInt(100000).toString(),
+                                  'Order #' + random.nextInt(100000).toString(),
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 18,
@@ -654,14 +664,13 @@ class Receipt extends StatelessWidget{
                             ),
                             SizedBox(height: 14),
                             Text(
-                              'Table No: '+ tableNumber.toString(),
+                              'Table No: ' + tableNumber.toString(),
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500),
                             ),
                             SizedBox(height: 10),
-
                             ListView.builder(
                                 shrinkWrap: true, // <- added
                                 primary: false,
@@ -669,12 +678,14 @@ class Receipt extends StatelessWidget{
                                 itemCount: cart.getCartItemCount(),
                                 itemBuilder: (BuildContext context, int index) {
                                   return ListTile(
-                                    trailing: Text(cart.cartItem[index].quantity.toString() +
+                                    trailing: Text(cart.cartItem[index].quantity
+                                            .toString() +
                                         " - RM " +
                                         (cart.cartItem[index].unitPrice *
-                                            cart.cartItem[index].quantity)
+                                                cart.cartItem[index].quantity)
                                             .toStringAsFixed(2)),
-                                    title: Text(cart.cartItem[index].productName),
+                                    title:
+                                        Text(cart.cartItem[index].productName),
                                   );
                                   //return new Text(cart.cartItem[index].unitPrice.toString());
                                 }),
@@ -683,8 +694,6 @@ class Receipt extends StatelessWidget{
                         ),
                       ),
                     ),
-
-
                   ),
                   Container(
                     child: Column(
@@ -703,21 +712,18 @@ class Receipt extends StatelessWidget{
                                 fontWeight: FontWeight.bold,
                                 fontSize: 30)),
                         SizedBox(height: 15),
-
-                        Text("Thank you for your purchase, please show the receipt at counter to proceed with your payment.",
-                          textAlign: TextAlign.center,),
+                        Text(
+                          "Thank you for your purchase, please show the receipt at counter to proceed with your payment.",
+                          textAlign: TextAlign.center,
+                        ),
                         SizedBox(height: 20),
-
-
                       ],
-                    )
-                    ,
+                    ),
                   ),
                 ],
               ),
             ),
           ),
-
         ],
       ),
     );

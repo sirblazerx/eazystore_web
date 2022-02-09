@@ -9,36 +9,41 @@ class OrderService {
   //collection ref
 
   final CollectionReference order =
-  FirebaseFirestore.instance.collection('Order');
+      FirebaseFirestore.instance.collection('Order');
 
 // Update/Create Data to Collection
 
   // User Data
 
-  Future updateOrderData({double Price, String Details,
-    String Category, String StoreId}) async {
+  Future updateOrderData(
+      {double Price,
+      String Details,
+      String Category,
+      String StoreId,
+      String TableNo}) async {
     return await order.doc(mid).set({
       'Price': Price,
       'Details': Details,
       'Category': Category,
       'StoreId': StoreId,
+      'TableNo': TableNo,
     });
   }
 
-  Future addOrder(double Price, String Details,
-      String StoreId) async {
+  Future addOrder(
+      double Price, String Details, String StoreId, String TableNo) async {
     return await order.doc().set({
       'Price': Price,
       'Details': Details,
       'Time': DateTime.now(),
       'StoreId': StoreId,
+      'TableNo': TableNo,
     });
   }
 
   Future deleteOrder() async {
     return await order.doc(mid).delete();
   }
-
 
   // UserData from snapshot
 
@@ -58,7 +63,6 @@ class OrderService {
       Price: snapshot['Price'],
       Time: snapshot['Time'],
       StoreId: snapshot['StoreId'],
-
     );
   }
 

@@ -6,14 +6,16 @@ class Order {
   final String Details;
   final double Price;
   final DateTime Time;
+  final String TableNo;
 
-  Order(
-      {this.OrderID,
-        this.StoreId,
-        this.Details,
-        this.Price,
-        this.Time,
-      });
+  Order({
+    this.OrderID,
+    this.TableNo,
+    this.StoreId,
+    this.Details,
+    this.Price,
+    this.Time,
+  });
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
@@ -22,6 +24,7 @@ class Order {
       Details: json['Details'],
       Price: json['Price'],
       Time: json['Time'],
+      TableNo: json['TableNo'],
     );
   }
 
@@ -32,6 +35,7 @@ class Order {
       'Details': Details,
       'Price': Price,
       'Time': Time,
+      'TableNo': TableNo,
     };
   }
 }
